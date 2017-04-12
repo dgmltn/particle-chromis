@@ -44,12 +44,6 @@ void setup() {
     irrecv.enableIRIn(); // Start the receiver
 
     pinMode(PIN_OUTPUT, OUTPUT);
-    Particle.function("tvOff", tvOff);
-    Particle.function("tvOn", tvOn);
-    Particle.function("hdmi1", hdmi1);
-    Particle.function("hdmi2", hdmi2);
-    Particle.function("hdmi3", hdmi3);
-    Particle.function("hdmi4", hdmi4);
     Particle.function("emit", emit);
 }
 
@@ -68,85 +62,60 @@ void loop() {
 // Power Off: "NEC,20DFA35C,32"
 
 int emit(String command) {
-	if (command != "") {
-        char inputStr[64];
-        command.toCharArray(inputStr, 64);
-        char *scheme = strtok(inputStr, ",");
-        char *p = strtok(NULL, ",");
-        int data = strtol(p, NULL, 16);
-        p = strtok(NULL, ",");
-        int bits = atoi(p);
-        //TODO: use scheme, data, bits here
-        //TODO: to emit IR signals
-        return 1;
-    }
-    else {
+	if (command == "") {
         return 0;
     }
 
-    /*
-    int p = 0;
-    int i = command.indexOf(',', p);
-    String scheme = command.substring(p, i).toUpperCase();
-    p = i+1;
-    i = command.indexOf(',', p);
-    String data = command.substring(p, i).toUpperCase();
-    p = i+1;
-    String bits = command.substring(p);
+    char inputStr[64];
+    command.toCharArray(inputStr, 64);
+    char *scheme = strtok(inputStr, ",");
+    char *p = strtok(NULL, ",");
+    int data = strtol(p, NULL, 16);
+    p = strtok(NULL, ",");
+    int bits = atoi(p);
 
-    if (scheme == "NEC") {
-        irsend.sendNEC(0x20DFA35C, 32);
-        irsend.sendNEC(REPEAT, 32);
-        irsend.sendNEC(REPEAT, 32);
+    if (strcmp(scheme, "NEC")==0) {
+        irsend.sendNEC(data, bits);
+        irsend.sendNEC(REPEAT, bits);
+        irsend.sendNEC(REPEAT, bits);
     }
-    return 0;
-    */
-}
+    else if (strcmp(scheme, "SONY")==0) {
+        irsend.sendSony(data, bits);
+        irsend.sendSony(REPEAT, bits);
+        irsend.sendSony(REPEAT, bits);
+    }
+    else if (strcmp(scheme, "RC5")==0) {
+        irsend.sendRC5(data, bits);
+        irsend.sendRC5(REPEAT, bits);
+        irsend.sendRC5(REPEAT, bits);
+    }
+    else if (strcmp(scheme, "RC6")==0) {
+        irsend.sendRC6(data, bits);
+        irsend.sendRC6(REPEAT, bits);
+        irsend.sendRC6(REPEAT, bits);
+    }
+    else if (strcmp(scheme, "DISH")==0) {
+        irsend.sendDISH(data, bits);
+        irsend.sendDISH(REPEAT, bits);
+        irsend.sendDISH(REPEAT, bits);
+    }
+    else if (strcmp(scheme, "SHARP")==0) {
+        irsend.sendSharp(data, bits);
+        irsend.sendSharp(REPEAT, bits);
+        irsend.sendSharp(REPEAT, bits);
+    }
+    else if (strcmp(scheme, "PANASONIC")==0) {
+        irsend.sendPanasonic(data, bits);
+        irsend.sendPanasonic(REPEAT, bits);
+        irsend.sendPanasonic(REPEAT, bits);
+    }
+    else if (strcmp(scheme, "JVC")==0) {
+        irsend.sendJVC(data, bits, 0);
+        irsend.sendJVC(data, bits, 1);
+        irsend.sendJVC(data, bits, 1);
+    }
+    // Neither Sanyo nor Mitsubishi is implemented yet
 
-int tvOff(String extra) {
-    irsend.sendNEC(0x20DFA35C, 32);
-    irsend.sendNEC(REPEAT, 32);
-    irsend.sendNEC(REPEAT, 32);
-    irrecv.enableIRIn();
-    return 1;
-}
-
-int tvOn(String extra) {
-    irsend.sendNEC(0x20DF23DC, 32);
-    irsend.sendNEC(REPEAT, 32);
-    irsend.sendNEC(REPEAT, 32);
-    irrecv.enableIRIn();
-    return 1;
-}
-
-int hdmi1(String extra) {
-    irsend.sendNEC(0xFF10EF, 32);
-    irsend.sendNEC(REPEAT, 32);
-    irsend.sendNEC(REPEAT, 32);
-    irrecv.enableIRIn();
-    return 1;
-}
-
-int hdmi2(String extra) {
-    irsend.sendNEC(0xFF50AF, 32);
-    irsend.sendNEC(REPEAT, 32);
-    irsend.sendNEC(REPEAT, 32);
-    irrecv.enableIRIn();
-    return 1;
-}
-
-int hdmi3(String extra) {
-    irsend.sendNEC(0xFF30CF, 32);
-    irsend.sendNEC(REPEAT, 32);
-    irsend.sendNEC(REPEAT, 32);
-    irrecv.enableIRIn();
-    return 1;
-}
-
-int hdmi4(String extra) {
-    irsend.sendNEC(0xFF708F, 32);
-    irsend.sendNEC(REPEAT, 32);
-    irsend.sendNEC(REPEAT, 32);
     irrecv.enableIRIn();
     return 1;
 }
