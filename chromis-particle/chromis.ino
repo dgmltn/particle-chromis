@@ -1,5 +1,10 @@
 // Tests the infrared receiver:
-// CHQ-1838
+
+// Hardware setup:
+//
+// This script assumes an IR Decoder connected to D0. I bought part number CHQ-1838
+// on Amazon. For IR Output, I connected a NPN transistor to A5, and two
+// IR LEDs in series with the C-E side of the trasistor with 5V (and 75 ohm resistor).
 
 // Connect to serial port using "screen":
 // screen -L /dev/tty.usbmodem???
@@ -45,6 +50,7 @@ void setup() {
     Particle.function("hdmi2", hdmi2);
     Particle.function("hdmi3", hdmi3);
     Particle.function("hdmi4", hdmi4);
+    Particle.function("emit", emit);
 }
 
 void loop() {
@@ -57,6 +63,46 @@ void loop() {
 /////////////////////////////////////////////////////////////////////////////////////
 // Particle functions
 /////////////////////////////////////////////////////////////////////////////////////
+// Emits an IR code corresponding to one that was dumped earlier
+// i.e.
+// Power Off: "NEC,20DFA35C,32"
+
+int emit(String command) {
+	if (command != "") {
+        char inputStr[64];
+        command.toCharArray(inputStr, 64);
+        char *scheme = strtok(inputStr, ",");
+        char *p = strtok(NULL, ",");
+        int data = strtol(p, NULL, 16);
+        p = strtok(NULL, ",");
+        int bits = atoi(p);
+        //TODO: use scheme, data, bits here
+        //TODO: to emit IR signals
+        return 1;
+    }
+    else {
+        return 0;
+    }
+
+    /*
+    int p = 0;
+    int i = command.indexOf(',', p);
+    String scheme = command.substring(p, i).toUpperCase();
+    p = i+1;
+    i = command.indexOf(',', p);
+    String data = command.substring(p, i).toUpperCase();
+    p = i+1;
+    String bits = command.substring(p);
+
+    if (scheme == "NEC") {
+        irsend.sendNEC(0x20DFA35C, 32);
+        irsend.sendNEC(REPEAT, 32);
+        irsend.sendNEC(REPEAT, 32);
+    }
+    return 0;
+    */
+}
+
 int tvOff(String extra) {
     irsend.sendNEC(0x20DFA35C, 32);
     irsend.sendNEC(REPEAT, 32);
@@ -109,46 +155,51 @@ int hdmi4(String extra) {
 // Helper methods
 /////////////////////////////////////////////////////////////////////////////////////
 void dumpSerial() {
+    char out[32];
+
     switch (results.decode_type) {
         case NEC:
-            Serial.print("NEC,");
+            sprintf(out, "NEC,%X,%d", results.value, results.bits);
             break;
         case SONY:
-            Serial.print("SONY,");
+            sprintf(out, "SONY,%X,%d", results.value, results.bits);
             break;
         case RC5:
-            Serial.print("RC5,");
+            sprintf(out, "RC5,%X,%d", results.value, results.bits);
             break;
         case RC6:
-            Serial.print("RC6,");
+            sprintf(out, "RC6,%X,%d", results.value, results.bits);
             break;
         case DISH:
-            Serial.print("DISH,");
+            sprintf(out, "DISH,%X,%d", results.value, results.bits);
             break;
         case SHARP:
-            Serial.print("SHARP,");
+            sprintf(out, "SHARP,%X,%d", results.value, results.bits);
             break;
         case PANASONIC:
-            Serial.print("PANASONIC,");
+            sprintf(out, "PANASONIC,%X,%d", results.value, results.bits);
             break;
         case JVC:
-            Serial.print("JVC,");
+            sprintf(out, "JVC,%X,%d", results.value, results.bits);
             break;
         case SANYO:
-            Serial.print("SANYO,");
+            sprintf(out, "SANYO,%X,%d", results.value, results.bits);
             break;
         case MITSUBISHI:
-            Serial.print("MITSUBISHI,");
+            sprintf(out, "MITSUBISHI,%X,%d", results.value, results.bits);
             break;
         case UNKNOWN:
-            Serial.print("UNKNOWN,");
+            sprintf(out, "UNKNOWN,%X,%d", results.value, results.bits);
             break;
         default:
-            Serial.print("???,");
+            sprintf(out, "???,%X,%d", results.value, results.bits);
             break;
     }
-    Serial.print(results.value, HEX);
-    Serial.print(",");
-    Serial.print(results.bits, DEC);
+
+    Serial.print(out);
     Serial.println();
+
+    if (results.value != REPEAT) {
+        Particle.publish("ir-detected", out);
+    }
 }
