@@ -1,0 +1,6 @@
+[submodule "chromis-particle/IRRemote"]
+	path = chromis-particle/IRRemote
+	url = https://github.com/babean/IRRemote.git
+[submodule "chromis-particle/SparkIntervalTimer"]
+	path = chromis-particle/SparkIntervalTimer
+	url = https://github.com/pkourany/SparkIntervalTimer.git

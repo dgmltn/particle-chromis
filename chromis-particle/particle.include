@@ -1,7 +1,7 @@
 chromis.ino
-IRremoteInt.h
-IRremote.h
-IRremote.cpp
-SparkIntervalTimer.h
-SparkIntervalTimer.cpp
+IRRemote/src/IRremoteInt.h
+IRRemote/src/IRremote.h
+IRRemote/src/IRremote.cpp
+SparkIntervalTimer/src/SparkIntervalTimer.h
+SparkIntervalTimer/src/SparkIntervalTimer.cpp
 
