@@ -6,7 +6,7 @@ A universal IR remote control, named after the Flashing Chromis.
 
 ### Hardware
 
-This project assumes a Particle Photon or Spark Core with an IR Decoder connected to pin ```D0```. I bought part number CHQ-1838 on Amazon. The IRremote library is hard-coded to output a remote control signal on pin ```A5```. For IR Output, I connected a NPN transistor to ```A5```, and two IR LEDs (in series) with the C-E side of the trasistor with 5V (and 75Ω resistor). I used the Photon's 5V power supply to power everything.
+This project assumes a Particle Photon or Spark Core with an IR Decoder connected to pin ```D0```. I bought part number CHQ-1838 on Amazon. The IRremote library is hard-coded to output a remote control signal on pin ```A5```. For IR Output, I connected a NPN transistor to ```A5```, and two IR LEDs (in series) with the C-E side of the transistor with 5V (and 75Ω resistor). I used the Photon's 5V power supply to power everything.
 
 ### API
 
