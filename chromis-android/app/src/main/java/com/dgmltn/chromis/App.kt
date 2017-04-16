@@ -2,10 +2,12 @@ package com.dgmltn.chromis
 
 import android.app.Application
 import android.os.AsyncTask
-import io.particle.android.sdk.cloud.ParticleCloud
-import io.particle.android.sdk.cloud.ParticleCloudException
-import io.particle.android.sdk.cloud.ParticleCloudSDK
-import io.particle.android.sdk.cloud.ParticleDevice
+import io.particle.android.sdk.cloud.*
+import io.particle.android.sdk.utils.Py
+import io.reactivex.Observable
+import io.reactivex.ObservableEmitter
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import timber.log.Timber.DebugTree
 
@@ -42,6 +44,37 @@ class App : Application() {
             Timber.e("Got Device")
             it
         }
+
+        val particleEventListener: Observable<ParticleEvent> by lazy {
+            var subscriptionId = 0L
+            Observable.create({ emitter: ObservableEmitter<ParticleEvent> ->
+                subscriptionId = device.subscribeToEvents(
+                        null, // eventNamePrefix, optional
+                        object : ParticleEventHandler {
+                            override fun onEvent(eventName: String, event: ParticleEvent) {
+                                Timber.i("Received event with payload: " + event.dataPayload)
+                                emitter.onNext(event)
+                            }
+
+                            override fun onEventError(e: Exception) {
+                                Timber.e("Event error: ", e)
+                            }
+                        })
+            })
+                    .doOnDispose {
+                        App.device.unsubscribeFromEvents(subscriptionId)
+                    }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+        }
+
+        fun particleFunctionCall(name: String, arguments: Any?): Observable<Int> =
+                Observable
+                        .fromCallable { App.device.callFunction(name, Py.list(arguments?.toString())) }
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+
+
     }
 
 }
