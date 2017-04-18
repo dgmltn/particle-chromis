@@ -1,13 +1,13 @@
 package com.dgmltn.chromis
 
 import android.app.Application
-import android.os.AsyncTask
 import io.particle.android.sdk.cloud.*
 import io.particle.android.sdk.utils.Py
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import io.realm.Realm
 import timber.log.Timber
 import timber.log.Timber.DebugTree
 
@@ -18,7 +18,7 @@ class App : Application() {
 
         ParticleCloudSDK.init(this)
 
-//        Realm.init(this)
+        Realm.init(this)
 
         if (BuildConfig.DEBUG) {
             Timber.plant(DebugTree())
@@ -32,8 +32,7 @@ class App : Application() {
             try {
                 it.logIn(BuildConfig.PARTICLE_USERNAME, BuildConfig.PARTICLE_PASSWORD)
                 Timber.e("Logged In")
-            }
-            catch (e: ParticleCloudException) {
+            } catch (e: ParticleCloudException) {
                 Timber.e("Could not get cloud: ${e.bestMessage}")
             }
             it
@@ -59,10 +58,11 @@ class App : Application() {
                             override fun onEventError(e: Exception) {
                                 Timber.e("Event error: ", e)
                             }
-                        })
+                        }
+                )
             })
                     .doOnDispose {
-                        App.device.unsubscribeFromEvents(subscriptionId)
+                        device.unsubscribeFromEvents(subscriptionId)
                     }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -73,7 +73,6 @@ class App : Application() {
                         .fromCallable { App.device.callFunction(name, Py.list(arguments?.toString())) }
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-
 
     }
 
