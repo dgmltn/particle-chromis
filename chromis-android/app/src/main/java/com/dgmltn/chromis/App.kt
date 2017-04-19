@@ -4,9 +4,9 @@ import android.app.Application
 import io.particle.android.sdk.cloud.*
 import io.particle.android.sdk.utils.Py
 import io.reactivex.Observable
-import io.reactivex.ObservableEmitter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.PublishSubject
 import io.realm.Realm
 import timber.log.Timber
 import timber.log.Timber.DebugTree
@@ -44,28 +44,29 @@ class App : Application() {
             it
         }
 
-        val particleEventListener: Observable<ParticleEvent> by lazy {
-            var subscriptionId = 0L
-            Observable.create({ emitter: ObservableEmitter<ParticleEvent> ->
-                subscriptionId = device.subscribeToEvents(
-                        null, // eventNamePrefix, optional
-                        object : ParticleEventHandler {
-                            override fun onEvent(eventName: String, event: ParticleEvent) {
-                                Timber.i("Received event with payload: " + event.dataPayload)
-                                emitter.onNext(event)
-                            }
+        val particleEventSubject: PublishSubject<ParticleEvent> by lazy {
+            val it: PublishSubject<ParticleEvent> = PublishSubject.create()
+            Timber.e("creating particleEventSubject")
+            Observable
+                    .fromCallable {
+                        device.subscribeToEvents(
+                                null, // eventNamePrefix, optional
+                                object : ParticleEventHandler {
+                                    override fun onEvent(eventName: String, event: ParticleEvent) {
+                                        Timber.i("Received event with payload: " + event.dataPayload)
+                                        it.onNext(event)
+                                    }
 
-                            override fun onEventError(e: Exception) {
-                                Timber.e("Event error: ", e)
-                            }
-                        }
-                )
-            })
-                    .doOnDispose {
-                        device.unsubscribeFromEvents(subscriptionId)
+                                    override fun onEventError(e: Exception) {
+                                        Timber.e("Event error: ", e)
+                                        it.onError(e)
+                                    }
+                                }
+                        )
                     }
                     .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe()
+            it
         }
 
         fun particleFunctionCall(name: String, arguments: Any?): Observable<Int> =

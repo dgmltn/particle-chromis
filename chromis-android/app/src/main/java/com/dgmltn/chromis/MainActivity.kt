@@ -1,5 +1,6 @@
 package com.dgmltn.chromis
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -11,21 +12,19 @@ import android.view.ViewGroup
 import android.widget.TextView
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView
 import com.dgmltn.chromis.model.IRCommand
+import io.particle.android.sdk.utils.Toaster
 import io.reactivex.disposables.Disposable
 import io.realm.Realm
 import io.realm.RealmBasedRecyclerViewAdapter
 import io.realm.RealmResults
 import io.realm.RealmViewHolder
 import timber.log.Timber
-import android.graphics.drawable.Animatable
-import android.graphics.drawable.Drawable
-import android.widget.ImageView
+import io.reactivex.android.schedulers.AndroidSchedulers
 
 
 class MainActivity : AppCompatActivity() {
 
     private val realm by lazy { Realm.getDefaultInstance() }
-    //private val sendEventButton by lazy { findViewById(R.id.send_event_button) }
     private val container by lazy { findViewById(R.id.container) }
     private val recycler by lazy { findViewById(R.id.recycler) as RealmRecyclerView }
 
@@ -81,9 +80,11 @@ class MainActivity : AppCompatActivity() {
     var disposable: Disposable? = null
 
     private fun subscribeToParticleEvents() {
-        disposable = App.particleEventListener.subscribe {
+        disposable = App.particleEventSubject.observeOn(AndroidSchedulers.mainThread()).subscribe {
             Timber.i("Got event %s", it.dataPayload)
-            Snackbar.make(container, it.dataPayload, Snackbar.LENGTH_LONG).show()
+            val command = it.dataPayload
+            val row = realm.where(IRCommand::class.java).equalTo("command", command).findFirst()
+            Snackbar.make(container, row?.name ?: command, Snackbar.LENGTH_LONG).show()
         }
     }
 
@@ -125,6 +126,12 @@ class MainActivity : AppCompatActivity() {
             realmViewHolder.name.text = commands[position].name
             realmViewHolder.command.text = commands[position].command
             realmViewHolder.description.text = commands[position].description
+            realmViewHolder.itemView.setOnClickListener {
+            App.particleFunctionCall("emit", commands[position].command)
+                    .subscribe {
+                        Toaster.s(context as Activity, "yay!")
+                    }
+            }
         }
     }
 

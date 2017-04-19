@@ -15,10 +15,6 @@ class AnimatedDrawablesTextView @JvmOverloads constructor(context: Context, attr
 
     override fun setCompoundDrawablesWithIntrinsicBounds(left: Drawable?, top: Drawable?, right: Drawable?, bottom: Drawable?) {
         super.setCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom)
-        listOf(left, top, right, bottom).forEach {
-            if (it is Animatable) {
-                it.start()
-            }
-        }
+        listOf(left, top, right, bottom).forEach { (it as? Animatable)?.start() }
     }
 }

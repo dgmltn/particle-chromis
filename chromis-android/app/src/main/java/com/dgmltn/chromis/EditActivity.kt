@@ -10,6 +10,7 @@ import android.view.MenuItem
 import android.widget.EditText
 import android.widget.TextView
 import com.dgmltn.chromis.model.IRCommand
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.realm.Realm
 
@@ -26,10 +27,7 @@ class EditActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
 
-        val drawable = commandText.compoundDrawables[2]
-        if (drawable is Animatable) {
-            drawable.start()
-        }
+        (commandText.compoundDrawables[2] as? Animatable)?.start()
 
         commandText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
@@ -98,7 +96,7 @@ class EditActivity : AppCompatActivity() {
     var disposable: Disposable? = null
 
     private fun subscribeToParticleEvents() {
-        disposable = App.particleEventListener.subscribe { event ->
+        disposable = App.particleEventSubject.observeOn(AndroidSchedulers.mainThread()).subscribe { event ->
             commandText.setText(event.dataPayload, TextView.BufferType.EDITABLE)
         }
     }
