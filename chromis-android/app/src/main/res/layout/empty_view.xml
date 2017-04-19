@@ -4,13 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <com.dgmltn.chromis.AnimatedDrawablesTextView
         android:id="@+id/empty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:drawableBottom="@drawable/ic_remote_animated"
+        android:drawableBottom="@drawable/ic_remote_animated_48"
         android:drawablePadding="16dp"
-        android:text="Please press a button on your remote control..."/>
+        android:text="@string/Please_press_a_button_on_your_remote_control"/>
 
 </FrameLayout>

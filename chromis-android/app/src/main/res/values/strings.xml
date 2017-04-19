@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Chromis</string>
+    <string name="Please_press_a_button_on_your_remote_control">Please press a button on your remote control...</string>
+    <string name="Description">Description</string>
+    <string name="IR_Code">IR Code</string>
+    <string name="Button_Name">Button Name</string>
 </resources>

@@ -1,19 +1,17 @@
 package com.dgmltn.chromis
 
-import android.content.Intent
 import android.graphics.drawable.Animatable
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.TextView
 import com.dgmltn.chromis.model.IRCommand
 import io.reactivex.disposables.Disposable
 import io.realm.Realm
-import java.util.*
-import kotlin.coroutines.experimental.EmptyCoroutineContext.plus
 
 
 class EditActivity : AppCompatActivity() {
@@ -23,32 +21,29 @@ class EditActivity : AppCompatActivity() {
     private val buttonNameText by lazy { findViewById(R.id.button_name_text) as EditText }
     private val commandText by lazy { findViewById(R.id.command_text) as EditText }
     private val buttonDescriptionText by lazy { findViewById(R.id.button_description_text) as EditText }
-    private val saveButton by lazy { findViewById(R.id.save_button) }
-    private val cancelButton by lazy { findViewById(R.id.cancel_button) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
 
-//        buttonNameText.setText(persisted.name, TextView.BufferType.EDITABLE)
-//        commandText.setText(persisted.command, TextView.BufferType.EDITABLE)
-//        buttonDescriptionText.setText(persisted.description, TextView.BufferType.EDITABLE)
-
-
-        val image = findViewById(R.id.anim_test) as ImageView
-        val drawable = image.drawable
+        val drawable = commandText.compoundDrawables[2]
         if (drawable is Animatable) {
             drawable.start()
         }
 
-        saveButton.setOnClickListener {
-            save()
-            finish()
-        }
+        commandText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {
+                val row = realm.where(IRCommand::class.java).equalTo("command", s.toString()).findFirst()
+                if (row != null) {
+                    buttonNameText.setText(row.name, TextView.BufferType.EDITABLE)
+                    buttonDescriptionText.setText(row.description, TextView.BufferType.EDITABLE)
+                }
+            }
 
-        cancelButton.setOnClickListener {
-            finish()
-        }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
     }
 
     override fun onStart() {

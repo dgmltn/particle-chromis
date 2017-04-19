@@ -15,7 +15,7 @@
             android:id="@+id/button_name_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Button Name"/>
+            android:hint="@string/Button_Name"/>
 
     </android.support.design.widget.TextInputLayout>
 
@@ -27,7 +27,8 @@
             android:id="@+id/command_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="IR Code"/>
+            android:drawableRight="@drawable/ic_remote_animated_24"
+            android:hint="@string/IR_Code"/>
 
     </android.support.design.widget.TextInputLayout>
 
@@ -39,33 +40,13 @@
             android:id="@+id/button_description_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Description"/>
+            android:hint="@string/Description"/>
 
     </android.support.design.widget.TextInputLayout>
-
-    <ImageView
-        android:id="@+id/anim_test"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_gravity="center"
-        android:src="@drawable/ic_remote_animated"
-        />
 
     <android.support.v4.widget.Space
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"/>
-
-    <Button
-        android:id="@+id/save_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="save" />
-
-    <Button
-        android:id="@+id/cancel_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="cancel" />
 
 </LinearLayout>

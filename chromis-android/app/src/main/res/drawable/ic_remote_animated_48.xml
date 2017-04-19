@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- https://developer.android.com/reference/android/graphics/drawable/AnimatedVectorDrawable.html -->
+<animated-vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt">
+
+    <aapt:attr name="android:drawable">
+        <vector
+            android:height="48dp"
+            android:width="48dp"
+            android:viewportWidth="24"
+            android:viewportHeight="24">
+            <path android:fillColor="#000" android:pathData="M 9 9 A 1 1 0 0 0 8 10 L 8 22 A 1 1 0 0 0 9 23 L 15 23 A 1 1 0 0 0 16 22 L 16 10 A 1 1 0 0 0 15 9 L 9 9 z M 12 11 A 2 2 0 0 1 14 13 A 2 2 0 0 1 12 15 A 2 2 0 0 1 10 13 A 2 2 0 0 1 12 11 z " />
+            <path android:name="wave1" android:fillColor="#000" android:pathData="M 7.05,6.05 8.46,7.46 C 9.37,6.56 10.62,6 12,6 c 1.38,0 2.63,0.56 3.54,1.46 L 16.95,6.05 C 15.68,4.78 13.93,4 12,4 10.07,4 8.32,4.78 7.05,6.05" />
+            <path android:name="wave2" android:fillColor="#000" android:pathData="M 12,0 C 8.96,0 6.21,1.23 4.22,3.22 L 5.63,4.63 C 7.26,3 9.5,2 12,2 c 2.5,0 4.74,1 6.36,2.64 L 19.77,3.23 C 17.79,1.23 15.04,0 12,0" />
+        </vector>
+    </aapt:attr>
+
+    <target android:name="wave1">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="fillAlpha"
+                android:valueType="floatType"
+                android:valueFrom="0"
+                android:valueTo="1"
+                android:repeatMode="reverse"
+                android:repeatCount="infinite"
+                android:interpolator="@android:interpolator/accelerate_cubic"
+                android:duration="1000" />
+        </aapt:attr>
+    </target>
+
+    <target android:name="wave2">
+        <aapt:attr name="android:animation">
+            <objectAnimator
+                android:propertyName="fillAlpha"
+                android:valueType="floatType"
+                android:valueFrom="0"
+                android:valueTo="1"
+                android:repeatMode="reverse"
+                android:repeatCount="infinite"
+                android:interpolator="@android:interpolator/accelerate_cubic"
+                android:startOffset="300"
+                android:duration="1000" />
+        </aapt:attr>
+    </target>
+
+</animated-vector>
