@@ -17,6 +17,7 @@
         app:rrvIsRefreshable="false"
         app:rrvEmptyLayoutId="@layout/empty_view"
         app:rrvLayoutType="LinearLayout"
+        app:rrvSwipeToDelete="true"
         />
 
 </android.support.design.widget.CoordinatorLayout>

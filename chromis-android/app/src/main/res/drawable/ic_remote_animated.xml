@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/ic_remote">
+
+    <target
+        android:animation="@anim/fade_wave1"
+        android:name="wave1" />
+
+    <target
+        android:animation="@anim/fade_wave2"
+        android:name="wave2" />
+</animated-vector>

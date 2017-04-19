@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            tools:text="This button turns on the tv"
+            tools:text="NEC,1234DEAD,32"
             />
 
     </LinearLayout>

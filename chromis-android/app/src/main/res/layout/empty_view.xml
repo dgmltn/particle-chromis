@@ -9,6 +9,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:drawableBottom="@drawable/ic_remote_animated"
+        android:drawablePadding="16dp"
         android:text="Please press a button on your remote control..."/>
 
 </FrameLayout>

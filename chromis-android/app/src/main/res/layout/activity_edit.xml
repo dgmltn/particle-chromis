@@ -24,7 +24,7 @@
         android:layout_height="wrap_content">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/received_event_text"
+            android:id="@+id/command_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="IR Code"/>
@@ -42,6 +42,14 @@
             android:hint="Description"/>
 
     </android.support.design.widget.TextInputLayout>
+
+    <ImageView
+        android:id="@+id/anim_test"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_remote_animated"
+        />
 
     <android.support.v4.widget.Space
         android:layout_width="match_parent"

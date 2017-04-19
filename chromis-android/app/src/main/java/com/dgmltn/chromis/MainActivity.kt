@@ -17,6 +17,10 @@ import io.realm.RealmBasedRecyclerViewAdapter
 import io.realm.RealmResults
 import io.realm.RealmViewHolder
 import timber.log.Timber
+import android.graphics.drawable.Animatable
+import android.graphics.drawable.Drawable
+import android.widget.ImageView
+
 
 class MainActivity : AppCompatActivity() {
 
