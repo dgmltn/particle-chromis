@@ -1,42 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="fill_parent"
-    android:layout_height="100dp"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_margin="5dp"
-    app:cardCornerRadius="2dp"
-    app:contentPadding="10dp">
+    app:cardCornerRadius="2dp">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="150dp"
         android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="18dp"
+            android:background="@drawable/circle"
+            android:padding="16dp"
+            android:src="@drawable/ic_remote_animated_48"/>
 
         <TextView
             android:id="@+id/name"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="36dp"
+            android:layout_gravity="bottom"
+            android:background="#20000000"
+            android:gravity="center"
+            android:padding="4dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            tools:text="Power On"
-            />
+            tools:text="Power On" />
 
-        <TextView
-            android:id="@+id/command"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            tools:text="NEC,1234DEAD,32"
-            />
+    </FrameLayout>
 
-        <TextView
-            android:id="@+id/description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            tools:text="NEC,1234DEAD,32"
-            />
-
-    </LinearLayout>
 </android.support.v7.widget.CardView>

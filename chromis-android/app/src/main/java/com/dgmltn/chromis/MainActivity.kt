@@ -1,31 +1,29 @@
 package com.dgmltn.chromis
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView
 import com.dgmltn.chromis.model.IRCommand
-import io.particle.android.sdk.utils.Toaster
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.realm.Realm
 import io.realm.RealmBasedRecyclerViewAdapter
 import io.realm.RealmResults
 import io.realm.RealmViewHolder
 import timber.log.Timber
-import io.reactivex.android.schedulers.AndroidSchedulers
 
 
 class MainActivity : AppCompatActivity() {
 
     private val realm by lazy { Realm.getDefaultInstance() }
-    private val container by lazy { findViewById(R.id.container) }
+    private val coordinator by lazy { findViewById(R.id.coordinator) }
     private val recycler by lazy { findViewById(R.id.recycler) as RealmRecyclerView }
 
     private val commands by lazy { realm.where(IRCommand::class.java).findAll() }
@@ -36,14 +34,6 @@ class MainActivity : AppCompatActivity() {
 
         val adapter = IRCommandAdapter(this, commands, true, true, null)
         recycler.setAdapter(adapter)
-
-//        sendEventButton.setOnClickListener {
-//            App.particleFunctionCall("emit", receivedEventText.text)
-//                    .subscribe {
-//                        Toaster.s(this, "yay!")
-//                    }
-//        }
-        Snackbar.make(container, "SNACKBAR!!", Snackbar.LENGTH_LONG).show()
     }
 
     override fun onStart() {
@@ -64,7 +54,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.add -> {
-                startActivity(Intent(this, EditActivity::class.java))
+                startActivity(EditActivity.getIntent(this))
                 return true
             }
             else -> {
@@ -84,7 +74,15 @@ class MainActivity : AppCompatActivity() {
             Timber.i("Got event %s", it.dataPayload)
             val command = it.dataPayload
             val row = realm.where(IRCommand::class.java).equalTo("command", command).findFirst()
-            Snackbar.make(container, row?.name ?: command, Snackbar.LENGTH_LONG).show()
+
+            val snackbar = Snackbar.make(coordinator, row?.name ?: command, Snackbar.LENGTH_LONG)
+            if (row == null) {
+                snackbar.setAction(R.string.Add, { startActivity(EditActivity.getIntent(this, command)) })
+            }
+            else {
+                snackbar.setAction(R.string.Edit, { startActivity(EditActivity.getIntent(this, command)) })
+            }
+            snackbar.show()
         }
     }
 
@@ -109,12 +107,10 @@ class MainActivity : AppCompatActivity() {
             automaticUpdate,
             animateResults,
             animateExtraColumnName
-    ) {
+    ), View.OnClickListener, View.OnLongClickListener {
 
         inner class ViewHolder(container: ViewGroup) : RealmViewHolder(container) {
             var name = container.findViewById(R.id.name) as TextView
-            var command = container.findViewById(R.id.command) as TextView
-            var description = container.findViewById(R.id.description) as TextView
         }
 
         override fun onCreateRealmViewHolder(viewGroup: ViewGroup, position: Int): ViewHolder {
@@ -124,14 +120,27 @@ class MainActivity : AppCompatActivity() {
 
         override fun onBindRealmViewHolder(realmViewHolder: ViewHolder, position: Int) {
             realmViewHolder.name.text = commands[position].name
-            realmViewHolder.command.text = commands[position].command
-            realmViewHolder.description.text = commands[position].description
-            realmViewHolder.itemView.setOnClickListener {
-            App.particleFunctionCall("emit", commands[position].command)
+            realmViewHolder.itemView.tag = commands[position].command
+            realmViewHolder.itemView.setOnClickListener(this)
+            realmViewHolder.itemView.setOnLongClickListener(this)
+        }
+
+        override fun onClick(view: View) {
+            val command = view.tag
+            App.particleFunctionCall("emit", command)
                     .subscribe {
-                        Toaster.s(context as Activity, "yay!")
+                        if (it == -1) {
+                            Snackbar.make(coordinator, R.string.snackbar_failed, Snackbar.LENGTH_LONG).show()
+                        }
+                        else {
+                            Snackbar.make(coordinator, R.string.snackbar_sent, Snackbar.LENGTH_LONG).show()
+                        }
                     }
-            }
+        }
+
+        override fun onLongClick(v: View): Boolean {
+            startActivity(EditActivity.getIntent(this@MainActivity, v.tag as String?))
+            return true
         }
     }
 

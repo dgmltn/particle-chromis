@@ -1,5 +1,7 @@
 package com.dgmltn.chromis
 
+import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.Animatable
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -17,11 +19,33 @@ import io.realm.Realm
 
 class EditActivity : AppCompatActivity() {
 
+    companion object {
+        val ARG_COMMAND = "ARG_COMMAND"
+
+        fun getIntent(context: Context, command: String? = null): Intent {
+            val intent = Intent(context, EditActivity::class.java)
+            if (command != null) {
+                intent.putExtra(ARG_COMMAND, command)
+            }
+            return intent
+        }
+    }
+
     private val realm by lazy { Realm.getDefaultInstance() }
 
     private val buttonNameText by lazy { findViewById(R.id.button_name_text) as EditText }
     private val commandText by lazy { findViewById(R.id.command_text) as EditText }
     private val buttonDescriptionText by lazy { findViewById(R.id.button_description_text) as EditText }
+
+    private val textWatcher = object : TextWatcher {
+        override fun afterTextChanged(s: Editable) {
+            populateFromCommand(s.toString())
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,19 +53,12 @@ class EditActivity : AppCompatActivity() {
 
         (commandText.compoundDrawables[2] as? Animatable)?.start()
 
-        commandText.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {
-                val row = realm.where(IRCommand::class.java).equalTo("command", s.toString()).findFirst()
-                if (row != null) {
-                    buttonNameText.setText(row.name, TextView.BufferType.EDITABLE)
-                    buttonDescriptionText.setText(row.description, TextView.BufferType.EDITABLE)
-                }
-            }
+        commandText.addTextChangedListener(textWatcher)
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
+        val argCommand = intent?.extras?.getString(ARG_COMMAND)
+        if (argCommand != null) {
+            commandText.setText(argCommand, TextView.BufferType.EDITABLE)
+        }
     }
 
     override fun onStart() {
@@ -105,4 +122,18 @@ class EditActivity : AppCompatActivity() {
         disposable?.dispose()
         disposable = null
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    // Private helpers
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
+    private fun populateFromCommand(command: String) {
+        val row = realm.where(IRCommand::class.java).equalTo("command", command).findFirst()
+        if (row != null) {
+            buttonNameText.setText(row.name, TextView.BufferType.EDITABLE)
+            buttonDescriptionText.setText(row.description, TextView.BufferType.EDITABLE)
+        }
+
+    }
+
 }

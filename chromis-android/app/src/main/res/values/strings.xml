@@ -4,4 +4,8 @@
     <string name="Description">Description</string>
     <string name="IR_Code">IR Code</string>
     <string name="Button_Name">Button Name</string>
+    <string name="Add">Add</string>
+    <string name="Edit">Edit</string>
+    <string name="snackbar_sent">Sent</string>
+    <string name="snackbar_failed">Command Failed</string>
 </resources>

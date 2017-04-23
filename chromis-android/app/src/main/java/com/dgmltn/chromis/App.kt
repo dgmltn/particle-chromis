@@ -71,9 +71,12 @@ class App : Application() {
 
         fun particleFunctionCall(name: String, arguments: Any?): Observable<Int> =
                 Observable
-                        .fromCallable { App.device.callFunction(name, Py.list(arguments?.toString())) }
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
+                        .just(Py.list(arguments?.toString()))
+                        .observeOn(Schedulers.io())
+                        .map { App.device.callFunction(name, it) }
+                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .doOnError { Timber.e(it) }
+                        .onErrorReturn { -1 }
 
     }
 
