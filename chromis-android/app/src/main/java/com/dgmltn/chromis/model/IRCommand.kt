@@ -8,5 +8,5 @@ open class IRCommand(
         @PrimaryKey open var id: Long = 0,
         open var name: String = "",
         @Index open var command: String = "",
-        open var description: String = ""
+        open var icon: String = ""
 ) : RealmObject()

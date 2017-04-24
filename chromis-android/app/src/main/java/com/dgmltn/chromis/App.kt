@@ -8,11 +8,24 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import io.realm.Realm
+import pl.coreorb.selectiondialogs.data.SelectableIcon
 import timber.log.Timber
 import timber.log.Timber.DebugTree
 
 
 class App : Application() {
+
+    val icons by lazy { arrayListOf(
+            SelectableIcon("input", getString(R.string.icon_input), R.drawable.ic_button_input),
+            SelectableIcon("hdmi", getString(R.string.icon_hdmi), R.drawable.ic_button_input_hdmi),
+            SelectableIcon("power", getString(R.string.icon_power), R.drawable.ic_button_power),
+            SelectableIcon("remote", getString(R.string.icon_remote), R.drawable.ic_button_remote),
+            SelectableIcon("television", getString(R.string.icon_television), R.drawable.ic_button_television),
+            SelectableIcon("volume-", getString(R.string.icon_volume_minus), R.drawable.ic_button_volume_minus),
+            SelectableIcon("volume+", getString(R.string.icon_volume_plus), R.drawable.ic_button_volume_plus),
+            SelectableIcon("mute", getString(R.string.icon_mute), R.drawable.ic_button_mute)
+    ) }
+
     override fun onCreate() {
         super.onCreate()
 
@@ -26,6 +39,7 @@ class App : Application() {
     }
 
     companion object {
+
         val cloud: ParticleCloud by lazy {
             val it = ParticleCloudSDK.getCloud()
             Timber.e("got cloud: ${it.accessToken}")
@@ -79,5 +93,7 @@ class App : Application() {
                         .onErrorReturn { -1 }
 
     }
+
+
 
 }

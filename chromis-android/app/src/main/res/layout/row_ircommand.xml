@@ -13,13 +13,14 @@
         android:orientation="vertical">
 
         <ImageView
+            android:id="@+id/icon"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_gravity="center"
             android:layout_marginBottom="18dp"
             android:background="@drawable/circle"
             android:padding="16dp"
-            android:src="@drawable/ic_remote_animated_48"/>
+            android:src="@drawable/ic_button_power"/>
 
         <TextView
             android:id="@+id/name"

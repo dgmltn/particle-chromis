@@ -8,4 +8,16 @@
     <string name="Edit">Edit</string>
     <string name="snackbar_sent">Sent</string>
     <string name="snackbar_failed">Command Failed</string>
+    <string name="Button_Icon">Button Icon</string>
+
+
+    <string name="icon_input">Input</string>
+    <string name="icon_hdmi">HDMI</string>
+    <string name="icon_power">Power</string>
+    <string name="icon_remote">Remote</string>
+    <string name="icon_television">Television</string>
+    <string name="icon_volume_minus">Volume -</string>
+    <string name="icon_volume_plus">Volume +</string>
+    <string name="icon_mute">Mute</string>
+
 </resources>

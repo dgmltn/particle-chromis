@@ -8,6 +8,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView
 import com.dgmltn.chromis.model.IRCommand
@@ -111,6 +112,7 @@ class MainActivity : AppCompatActivity() {
 
         inner class ViewHolder(container: ViewGroup) : RealmViewHolder(container) {
             var name = container.findViewById(R.id.name) as TextView
+            var icon = container.findViewById(R.id.icon) as ImageView
         }
 
         override fun onCreateRealmViewHolder(viewGroup: ViewGroup, position: Int): ViewHolder {
@@ -120,14 +122,19 @@ class MainActivity : AppCompatActivity() {
 
         override fun onBindRealmViewHolder(realmViewHolder: ViewHolder, position: Int) {
             realmViewHolder.name.text = commands[position].name
-            realmViewHolder.itemView.tag = commands[position].command
+            realmViewHolder.icon.setImageResource(findIconFor(commands[position].icon))
+            realmViewHolder.itemView.tag = commands[position]
+
             realmViewHolder.itemView.setOnClickListener(this)
             realmViewHolder.itemView.setOnLongClickListener(this)
         }
 
+        private fun findIconFor(id: String) =
+                (application as App).icons.find { it.id == id }?.drawableResId ?: R.drawable.ic_button_help
+
         override fun onClick(view: View) {
-            val command = view.tag
-            App.particleFunctionCall("emit", command)
+            val command = view.tag as IRCommand
+            App.particleFunctionCall("emit", command.command)
                     .subscribe {
                         if (it == -1) {
                             Snackbar.make(coordinator, R.string.snackbar_failed, Snackbar.LENGTH_LONG).show()
@@ -139,7 +146,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onLongClick(v: View): Boolean {
-            startActivity(EditActivity.getIntent(this@MainActivity, v.tag as String?))
+            startActivity(EditActivity.getIntent(this@MainActivity, (v.tag as IRCommand).command))
             return true
         }
     }

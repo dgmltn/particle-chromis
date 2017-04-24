@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:height="@dimen/button_icon_size"
+    android:width="@dimen/button_icon_size"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path android:fillColor="@color/buttonIconColor" android:pathData="M3,9H7L12,4V20L7,15H3V9M14,11H22V13H14V11Z" />
+</vector>
