@@ -7,20 +7,29 @@
     android:layout_margin="5dp"
     app:cardCornerRadius="2dp">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:orientation="vertical">
+
+        <android.support.v4.widget.Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
         <ImageView
             android:id="@+id/icon"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_gravity="center"
-            android:layout_marginBottom="18dp"
             android:background="@drawable/circle"
-            android:padding="16dp"
+            android:padding="20dp"
             android:src="@drawable/ic_button_power"/>
+
+        <android.support.v4.widget.Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
         <TextView
             android:id="@+id/name"
@@ -33,6 +42,6 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             tools:text="Power On" />
 
-    </FrameLayout>
+    </LinearLayout>
 
 </android.support.v7.widget.CardView>

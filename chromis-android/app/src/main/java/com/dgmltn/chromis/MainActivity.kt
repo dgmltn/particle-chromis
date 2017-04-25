@@ -19,6 +19,8 @@ import io.realm.RealmBasedRecyclerViewAdapter
 import io.realm.RealmResults
 import io.realm.RealmViewHolder
 import timber.log.Timber
+import android.support.v4.app.ActivityOptionsCompat
+import android.support.v4.view.ViewCompat
 
 
 class MainActivity : AppCompatActivity() {
@@ -121,9 +123,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onBindRealmViewHolder(realmViewHolder: ViewHolder, position: Int) {
-            realmViewHolder.name.text = commands[position].name
-            realmViewHolder.icon.setImageResource(findIconFor(commands[position].icon))
-            realmViewHolder.itemView.tag = commands[position]
+            val command = commands[position]
+            realmViewHolder.itemView.tag = command
+
+            realmViewHolder.name.text = command.name
+
+            realmViewHolder.icon.setImageResource(findIconFor(command.icon))
+            realmViewHolder.icon.transitionName = command.command
+
+            Timber.e("transitionName = ${command.command}")
 
             realmViewHolder.itemView.setOnClickListener(this)
             realmViewHolder.itemView.setOnLongClickListener(this)
@@ -146,7 +154,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onLongClick(v: View): Boolean {
-            startActivity(EditActivity.getIntent(this@MainActivity, (v.tag as IRCommand).command))
+            val activity = this@MainActivity
+            val command = v.tag as IRCommand
+            val intent = EditActivity.getIntent(activity, command.command)
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, v.findViewById(R.id.icon), command.command)
+            startActivity(intent, options.toBundle())
             return true
         }
     }

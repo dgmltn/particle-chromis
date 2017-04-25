@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Animatable
 import android.os.Bundle
-import android.support.annotation.DrawableRes
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
@@ -64,6 +63,7 @@ class EditActivity : AppCompatActivity(), IconSelectDialog.OnIconSelectedListene
         val argCommand = intent?.extras?.getString(ARG_COMMAND)
         if (argCommand != null) {
             commandText.setText(argCommand, TextView.BufferType.EDITABLE)
+            buttonIcon.transitionName = argCommand
         }
 
         buttonIcon.setOnClickListener {
