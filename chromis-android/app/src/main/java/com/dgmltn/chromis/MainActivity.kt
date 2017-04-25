@@ -3,6 +3,7 @@ package com.dgmltn.chromis
 import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.support.v4.app.ActivityOptionsCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -19,8 +20,7 @@ import io.realm.RealmBasedRecyclerViewAdapter
 import io.realm.RealmResults
 import io.realm.RealmViewHolder
 import timber.log.Timber
-import android.support.v4.app.ActivityOptionsCompat
-import android.support.v4.view.ViewCompat
+import android.support.v4.util.Pair
 
 
 class MainActivity : AppCompatActivity() {
@@ -115,6 +115,7 @@ class MainActivity : AppCompatActivity() {
         inner class ViewHolder(container: ViewGroup) : RealmViewHolder(container) {
             var name = container.findViewById(R.id.name) as TextView
             var icon = container.findViewById(R.id.icon) as ImageView
+            var iconBackground = container.findViewById(R.id.icon_background)
         }
 
         override fun onCreateRealmViewHolder(viewGroup: ViewGroup, position: Int): ViewHolder {
@@ -129,7 +130,9 @@ class MainActivity : AppCompatActivity() {
             realmViewHolder.name.text = command.name
 
             realmViewHolder.icon.setImageResource(findIconFor(command.icon))
-            realmViewHolder.icon.transitionName = command.command
+            realmViewHolder.icon.transitionName = "icon" + command.command
+
+            realmViewHolder.iconBackground.transitionName = "iconBackground" + command.command
 
             Timber.e("transitionName = ${command.command}")
 
@@ -157,7 +160,9 @@ class MainActivity : AppCompatActivity() {
             val activity = this@MainActivity
             val command = v.tag as IRCommand
             val intent = EditActivity.getIntent(activity, command.command)
-            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, v.findViewById(R.id.icon), command.command)
+            var p1 = Pair.create(v.findViewById(R.id.icon), "icon" + command.command)
+            var p2 = Pair.create(v.findViewById(R.id.icon_background), "iconBackground" + command.command)
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, p1, p2)
             startActivity(intent, options.toBundle())
             return true
         }

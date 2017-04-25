@@ -40,7 +40,8 @@ class EditActivity : AppCompatActivity(), IconSelectDialog.OnIconSelectedListene
 
     private val buttonNameText by lazy { findViewById(R.id.button_name_text) as EditText }
     private val commandText by lazy { findViewById(R.id.command_text) as EditText }
-    private val buttonIcon by lazy { findViewById(R.id.icon) as ImageView }
+    private val icon by lazy { findViewById(R.id.icon) as ImageView }
+    private val iconBackground by lazy { findViewById(R.id.icon_background) }
 
     private val textWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable) {
@@ -63,10 +64,11 @@ class EditActivity : AppCompatActivity(), IconSelectDialog.OnIconSelectedListene
         val argCommand = intent?.extras?.getString(ARG_COMMAND)
         if (argCommand != null) {
             commandText.setText(argCommand, TextView.BufferType.EDITABLE)
-            buttonIcon.transitionName = argCommand
+            icon.transitionName = "icon" + argCommand
+            iconBackground.transitionName = "iconBackground" + argCommand
         }
 
-        buttonIcon.setOnClickListener {
+        icon.setOnClickListener {
             showIconSelectDialog()
         }
     }
@@ -91,7 +93,11 @@ class EditActivity : AppCompatActivity(), IconSelectDialog.OnIconSelectedListene
         when (item.itemId) {
             R.id.save -> {
                 save()
-                finish()
+                supportFinishAfterTransition()
+                return true
+            }
+            android.R.id.home -> {
+                supportFinishAfterTransition()
                 return true
             }
             else -> {
@@ -155,7 +161,7 @@ class EditActivity : AppCompatActivity(), IconSelectDialog.OnIconSelectedListene
     private var iconId: String = ""
         set(value) {
             field = value
-            buttonIcon.setImageResource(findIconFor(value))
+            icon.setImageResource(findIconFor(value))
         }
 
     private fun showIconSelectDialog() {

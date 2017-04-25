@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="16dp"
     tools:context="com.dgmltn.chromis.MainActivity">
 
     <android.support.design.widget.TextInputLayout
@@ -23,15 +24,28 @@
         android:layout_width="match_parent"
         android:layout_height="48dp" />
 
-    <ImageView
-        android:id="@+id/icon"
-        android:layout_width="128dp"
-        android:layout_height="128dp"
-        android:layout_gravity="center"
-        android:background="@drawable/circle"
-        android:layout_margin="16dp"
-        android:padding="32dp"
-        android:src="@drawable/ic_button_input"/>
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <View
+            android:id="@+id/icon_background"
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:layout_gravity="center"
+            android:background="@drawable/squircle"
+            />
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_button_input"/>
+
+    </FrameLayout>
+
 
     <android.support.v7.widget.AppCompatEditText
         android:id="@+id/button_name_text"
