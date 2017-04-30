@@ -4,4 +4,5 @@ IRRemote/src/IRremote.h
 IRRemote/src/IRremote.cpp
 SparkIntervalTimer/src/SparkIntervalTimer.h
 SparkIntervalTimer/src/SparkIntervalTimer.cpp
-
+MQTT/firmware/MQTT.h
+MQTT/firmware/MQTT.cpp

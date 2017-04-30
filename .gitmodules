@@ -4,3 +4,6 @@
 [submodule "chromis-particle/SparkIntervalTimer"]
 	path = chromis-particle/SparkIntervalTimer
 	url = https://github.com/pkourany/SparkIntervalTimer.git
+[submodule "chromis-particle/MQTT"]
+	path = chromis-particle/MQTT
+	url = https://github.com/hirotakaster/MQTT.git

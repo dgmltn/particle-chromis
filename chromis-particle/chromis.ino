@@ -26,6 +26,7 @@
 // HDMI1: NEC,20DF738C,32
 
 #include <IRremote.h>
+#include <MQTT.h>
 
 const int PIN_OUTPUT = A5;
 const int PIN_INPUT = D0;
@@ -36,8 +37,56 @@ IRsend irsend;
 decode_results results;
 
 /////////////////////////////////////////////////////////////////////////////////////
-// Main Arduino Loop
+// MQTT
 /////////////////////////////////////////////////////////////////////////////////////
+
+char myIpString[24];
+byte server[] = { 10, 5, 23, 34 };
+
+void mqttCallback(char* topic, byte* payload, unsigned int length) {
+    char p[length + 1];
+    memcpy(p, payload, length);
+    p[length] = NULL;
+    String message(p);
+
+	emit(message);
+}
+
+MQTT mqttClient(server, 1883, mqttCallback);
+int mqtt_status = 0;
+
+bool setupMqtt() {
+    Particle.variable("mqttstatus", mqtt_status);
+
+    // connect to the server
+    if (mqttClient.connect("chromis")) {
+        // subscribe
+        mqttClient.subscribe("devices/chromis/in");
+        return true;
+    }
+    return false;
+}
+
+void loopMqtt() {
+    mqtt_status = mqttClient.isConnected() ? 1 : 0;
+
+    if (!mqttClient.loop()) {
+        // Not connected, try to reconnect
+        if (!setupMqtt()) {
+            // Reconnect failed, wait a few seconds
+            delay(5000);
+        }
+    }
+}
+
+bool mqttPublish(String button) {
+    return mqttClient.publish("devices/chromis/out", button);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+// MAIN PROGRAM
+/////////////////////////////////////////////////////////////////////////////////////
+
 void setup() {
     Serial.begin(9600);
     irrecv.blink13(TRUE);
@@ -45,6 +94,8 @@ void setup() {
 
     pinMode(PIN_OUTPUT, OUTPUT);
     Particle.function("emit", emit);
+
+	setupMqtt();
 }
 
 void loop() {
@@ -52,6 +103,7 @@ void loop() {
         dumpSerial();
         irrecv.resume(); // Receive the next value
     }
+	loopMqtt();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -170,5 +222,6 @@ void dumpSerial() {
 
     if (results.value != REPEAT) {
         Particle.publish("ir-detected", out);
+        mqttPublish(out);
     }
 }
