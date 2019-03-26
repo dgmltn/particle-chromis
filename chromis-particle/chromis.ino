@@ -6,8 +6,8 @@
 // on Amazon. For IR Output, I connected a NPN transistor to A5, and two
 // IR LEDs in series with the C-E side of the trasistor with 5V (and 75 ohm resistor).
 
-// Connect to serial port using "screen":
-// screen -L /dev/tty.usbmodem???
+// Show serial debugging:
+// particle serial monitor
 
 // Found commands:
 // For hdmi switch:
@@ -29,14 +29,14 @@
 #include <MQTT.h>
 
 const int PIN_OUTPUT = A5;
-const int PIN_INPUT = D0;
+const int PIN_INPUT = D2;
 
 ////////////////////////////////////////////////////////////////////////////////
 // MQTT
 ////////////////////////////////////////////////////////////////////////////////
 
 char myIpString[24];
-byte server[] = { 10, 5, 23, 34 };
+byte server[] = { 10, 5, 23, 6 };
 
 void mqttCallback(char* topic, byte* payload, unsigned int length) {
     char p[length + 1];
@@ -56,7 +56,7 @@ bool setupMqtt() {
     // connect to the server
     if (mqttClient.connect("chromis")) {
         // subscribe
-        mqttClient.subscribe("devices/chromis/in");
+        mqttClient.subscribe("cda/downstairs/family-room/ir/transmit");
         return true;
     }
     return false;
@@ -75,7 +75,7 @@ void loopMqtt() {
 }
 
 bool mqttPublish(String button) {
-    return mqttClient.publish("devices/chromis/out", button);
+    return mqttClient.publish("cda/downstairs/family-room/ir/detected", button);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
