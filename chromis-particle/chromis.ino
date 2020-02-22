@@ -56,7 +56,7 @@ bool setupMqtt() {
     // connect to the server
     if (mqttClient.connect("chromis")) {
         // subscribe
-        mqttClient.subscribe("cda/downstairs/family-room/ir/transmit");
+        mqttClient.subscribe("devices/particle/chromis/transmit");
         return true;
     }
     return false;
@@ -75,7 +75,7 @@ void loopMqtt() {
 }
 
 bool mqttPublish(String button) {
-    return mqttClient.publish("cda/downstairs/family-room/ir/detected", button);
+    return mqttClient.publish("devices/particle/chromis/ir", button);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
