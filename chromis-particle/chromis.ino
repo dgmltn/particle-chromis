@@ -24,6 +24,10 @@
 // Vol-: NEC,20DFC03F,32
 // Mute: NEC,20DF906F,32
 // HDMI1: NEC,20DF738C,32
+//UNTESTED:
+// HDMI2: NEC,20DF33CC,32
+// HDMI3: NEC,20DF9768,32
+
 
 #include <IRremote.h>
 #include <MQTT.h>
@@ -36,7 +40,7 @@ const int PIN_INPUT = D2;
 ////////////////////////////////////////////////////////////////////////////////
 
 char myIpString[24];
-byte server[] = { 10, 5, 23, 6 };
+byte server[] = { 10, 5, 22, 2 };
 
 void mqttCallback(char* topic, byte* payload, unsigned int length) {
     char p[length + 1];
